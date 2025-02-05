@@ -7,45 +7,26 @@ import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { useContext, useState } from "react";
 import { LayoutContext } from "../../../../layout/context/layoutcontext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UserSchema, TUserSchema } from "@/lib/UserSchema";
 
-const steps = [
-    {
-        id: 'Step 1',
-        name: 'Personal Information',
-        fields: ['firstName', 'lastName', 'email']
-    },
-    {
-        id: 'Step 2',
-        name: 'Address',
-        fields: ['country', 'state', 'city', 'street', 'zip']
-    },
-    {
-        id: 'Step 3', 
-        name: 'Complete' 
-    }
-]
 
 const Register: Page = () => {
-    const [confirmed, setConfirmed] = useState(false);
+    // const [confirmed, setConfirmed] = useState(false);
     const router = useRouter();
     const { layoutConfig } = useContext(LayoutContext);
     const dark = layoutConfig.colorScheme !== "light";
-    const [previousStep, setPreviousStep] = useState(0);
-    const [currentStep, setCurrentStep] = useState(0);
-    const delta = currentStep - previousStep;
-
-    const next = () => {
-        setPreviousStep(currentStep);
-        setCurrentStep(step => step + 1);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting }
+    } = useForm<TUserSchema>({
+        resolver: zodResolver(UserSchema)
+    });
+    const onSubmit = (data: TUserSchema) => {
+        console.log(data);
     }
-
-    const prev = () => {
-        if(currentStep > 0) {
-            setPreviousStep(currentStep);
-            setCurrentStep(step => step - 1);
-        }
-    }
-
     return (
         <>
             {/* Background Image */}
@@ -80,260 +61,104 @@ const Register: Page = () => {
             {/* Form Component */}
             <div className="px-5 min-h-screen flex justify-content-center align-items-center">
                 <div className="border-1 surface-border surface-card border-round py-7 px-4 md:px-7 z-1">
-                    {currentStep == 0 && (
-                        <>
-                            {/* Form Title Component */}
-                            <div className="mb-4">
-                                <div className="text-900 text-xl font-bold mb-2">
-                                    Register
-                                </div>
-                                <span className="text-600 font-medium">
-                                    {/* Let&lsquo;s get started */}
-                                    Personal Information
-                                </span>
-                            </div>
-                            {/* Form Body Component */}
-                            <div className="flex flex-column">
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-user"></i>
-                                    <InputText
-                                        id="username"
-                                        type="text"
-                                        className="w-full md:w-25rem"
-                                        placeholder="Username"
-                                    />
-                                </span>
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-envelope"></i>
-                                    <InputText
-                                        id="email"
-                                        type="text"
-                                        className="w-full md:w-25rem"
-                                        placeholder="Email"
-                                    />
-                                </span>
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-lock z-2"></i>
-                                    <Password
-                                        id="password"
-                                        type="password"
-                                        className="w-full"
-                                        inputClassName="w-full md:w-25rem"
-                                        placeholder="Password"
-                                        toggleMask
-                                        inputStyle={{ paddingLeft: "2.5rem" }}
-                                    />
-                                </span>
-                                <div className="mb-4 flex flex-wrap">
-                                    <Checkbox
-                                        name="checkbox"
-                                        checked={confirmed}
-                                        onChange={(e) =>
-                                            setConfirmed(e.checked ?? false)
-                                        }
-                                        className="mr-2"
-                                    ></Checkbox>
-                                    <label
-                                        htmlFor="checkbox"
-                                        className="text-900 font-medium mr-2"
-                                    >
-                                        I have read the
-                                    </label>
-                                    <a className="text-600 cursor-pointer hover:text-primary cursor-pointer">
-                                        Terms and Conditions
-                                    </a>
-                                </div>
-                                <Button
-                                    label="Sign Up"
-                                    className="w-full mb-4"
-                                    // onClick={() => router.push("/")}
-                                ></Button>
-                                <span className="font-medium text-600">
-                                    Already have an account?{" "}
-                                    <a className="font-semibold cursor-pointer text-900 hover:text-primary transition-colors transition-duration-300">
-                                        Login
-                                    </a>
-                                </span>
-                            </div>
-                        </>
-                    )}
-                    {currentStep == 1 && (
-                        <>
-                            {/* Form Title Component */}
-                            <div className="mb-4">
-                                <div className="text-900 text-xl font-bold mb-2">
-                                    Register
-                                </div>
-                                <span className="text-600 font-medium">
-                                    {/* Let&lsquo;s get started */}
-                                    Contact Information
-                                </span>
-                            </div>
-                            {/* Form Body Component */}
-                            <div className="flex flex-column">
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-user"></i>
-                                    <InputText
-                                        id="username"
-                                        type="text"
-                                        className="w-full md:w-25rem"
-                                        placeholder="Username"
-                                    />
-                                </span>
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-envelope"></i>
-                                    <InputText
-                                        id="email"
-                                        type="text"
-                                        className="w-full md:w-25rem"
-                                        placeholder="Email"
-                                    />
-                                </span>
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-lock z-2"></i>
-                                    <Password
-                                        id="password"
-                                        type="password"
-                                        className="w-full"
-                                        inputClassName="w-full md:w-25rem"
-                                        placeholder="Password"
-                                        toggleMask
-                                        inputStyle={{ paddingLeft: "2.5rem" }}
-                                    />
-                                </span>
-                                <div className="mb-4 flex flex-wrap">
-                                    <Checkbox
-                                        name="checkbox"
-                                        checked={confirmed}
-                                        onChange={(e) =>
-                                            setConfirmed(e.checked ?? false)
-                                        }
-                                        className="mr-2"
-                                    ></Checkbox>
-                                    <label
-                                        htmlFor="checkbox"
-                                        className="text-900 font-medium mr-2"
-                                    >
-                                        I have read the
-                                    </label>
-                                    <a className="text-600 cursor-pointer hover:text-primary cursor-pointer">
-                                        Terms and Conditions
-                                    </a>
-                                </div>
-                                <Button
-                                    label="Sign Up"
-                                    className="w-full mb-4"
-                                    // onClick={() => router.push("/")}
-                                ></Button>
-                                <span className="font-medium text-600">
-                                    Already have an account?{" "}
-                                    <a className="font-semibold cursor-pointer text-900 hover:text-primary transition-colors transition-duration-300">
-                                        Login
-                                    </a>
-                                </span>
-                            </div>
-                        </>
-                    )}
-                    {currentStep == 2 && (
-                        <>
-                            {/* Form Title Component */}
-                            <div className="mb-4">
-                                <div className="text-900 text-xl font-bold mb-2">
-                                    Register
-                                </div>
-                                <span className="text-600 font-medium">
-                                    {/* Let&lsquo;s get started */}
-                                    Accept Terms and Conditions
-                                </span>
-                            </div>
-                            {/* Form Body Component */}
-                            <div className="flex flex-column">
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-user"></i>
-                                    <InputText
-                                        id="username"
-                                        type="text"
-                                        className="w-full md:w-25rem"
-                                        placeholder="Username"
-                                    />
-                                </span>
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-envelope"></i>
-                                    <InputText
-                                        id="email"
-                                        type="text"
-                                        className="w-full md:w-25rem"
-                                        placeholder="Email"
-                                    />
-                                </span>
-                                <span className="p-input-icon-left w-full mb-4">
-                                    <i className="pi pi-lock z-2"></i>
-                                    <Password
-                                        id="password"
-                                        type="password"
-                                        className="w-full"
-                                        inputClassName="w-full md:w-25rem"
-                                        placeholder="Password"
-                                        toggleMask
-                                        inputStyle={{ paddingLeft: "2.5rem" }}
-                                    />
-                                </span>
-                                <div className="mb-4 flex flex-wrap">
-                                    <Checkbox
-                                        name="checkbox"
-                                        checked={confirmed}
-                                        onChange={(e) =>
-                                            setConfirmed(e.checked ?? false)
-                                        }
-                                        className="mr-2"
-                                    ></Checkbox>
-                                    <label
-                                        htmlFor="checkbox"
-                                        className="text-900 font-medium mr-2"
-                                    >
-                                        I have read the
-                                    </label>
-                                    <a className="text-600 cursor-pointer hover:text-primary cursor-pointer">
-                                        Terms and Conditions
-                                    </a>
-                                </div>
-                                <Button
-                                    label="Sign Up"
-                                    className="w-full mb-4"
-                                    // onClick={() => router.push("/")}
-                                ></Button>
-                                <span className="font-medium text-600">
-                                    Already have an account?{" "}
-                                    <a className="font-semibold cursor-pointer text-900 hover:text-primary transition-colors transition-duration-300">
-                                        Login
-                                    </a>
-                                </span>
-                            </div>
-                        </>
-                    )}
-                    {/* Navigation Component */}
-                    <div className="flex justify-content-between">
-                        <Button
-                            className="mb-4"
-                            disabled={currentStep === 0}
-                            onClick={prev}
-                        >
-                            <i className="pi pi-angle-left"></i>
-                            &nbsp;
-                            <span>Previous</span>
-                        </Button>
-                        <Button
-                            className="mb-4"
-                            disabled={currentStep === steps.length - 1}
-                            onClick={next}
-                        >
-                            <span>Next</span>
-                            &nbsp;
-                            <i className="pi pi-angle-right"></i>
-                        </Button>
+                    {/* Form Title Component */}
+                    <div className="mb-4">
+                        <div className="text-900 text-xl font-bold mb-2">
+                            Register
+                        </div>
+                        <span className="text-600 font-medium">
+                            Let&lsquo;s get started
+                        </span>
                     </div>
+                    {/* Form Body Component */}
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-column">
+                        <span className="p-input-icon-left w-full mb-4">
+                            <i className="pi pi-user"></i>
+                            <InputText
+                                {...register("username")}
+                                id="username"
+                                type="text"
+                                className="w-full md:w-25rem"
+                                placeholder="Username"
+                            />
+                            {errors.username && (
+                                <div className="text-red-600">{errors.username.message}</div>
+                            )}
+                        </span>
+                        <span className="p-input-icon-left w-full mb-4">
+                            <i className="pi pi-envelope"></i>
+                            <InputText
+                                {...register("email")}
+                                id="email"
+                                type="text"
+                                className="w-full md:w-25rem"
+                                placeholder="Email"
+                            />
+                            {errors.email && (
+                                <div className="text-red-600">{errors.email.message}</div>
+                            )}
+                        </span>
+                        <span className="p-input-icon-left w-full mb-4">
+                            <i className="pi pi-lock z-2"></i>
+                            <InputText
+                                {...register("password")}
+                                id="password"
+                                type="password"
+                                className="w-full"
+                                placeholder="Password"
+                            />
+                            {errors.password && (
+                                <div className="text-red-600">{errors.password.message}</div>
+                            )}
+                        </span>
+                        <span className="p-input-icon-left w-full mb-4">
+                            <i className="pi pi-lock z-2"></i>
+                            <InputText
+                                {...register("confirmPassword")}
+                                id="confirm-password"
+                                type="password"
+                                className="w-full"
+                                placeholder="Confirm Password"
+                            />
+                            {errors.confirmPassword && (
+                                <div className="text-red-600">{errors.confirmPassword.message}</div>
+                            )}
+                        </span>
+                        <div className="mb-2 flex flex-wrap">
+                            <input
+                                type="checkbox"
+                                {...register("agreedToTNC")}
+                                id="checkbox"
+                                className="mr-2"
+                            ></input>
+                            <label
+                                htmlFor="checkbox"
+                                className="text-900 font-medium mr-2"
+                            >
+                                I have read the
+                            </label>
+                            <a className="text-600 cursor-pointer hover:text-primary cursor-pointer">
+                                Terms and Conditions
+                            </a>
+                        </div>
+                        {errors.agreedToTNC && (
+                            <div className="mb-2 text-red-600">{errors.agreedToTNC.message}</div>
+                        )}
+                        <Button
+                            type="submit"
+                            label="Sign Up"
+                            className="w-full mb-4"
+                            disabled={isSubmitting}
+                            // onClick={() => router.push("/")}
+                        ></Button>
+                        <span className="font-medium text-600">
+                            Already have an account?{" "}
+                            <a className="font-semibold cursor-pointer text-900 hover:text-primary transition-colors transition-duration-300">
+                                Login
+                            </a>
+                        </span>
+                    </form>
                 </div>
-                
             </div>
         </>
     );
