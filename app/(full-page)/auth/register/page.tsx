@@ -1,28 +1,57 @@
 "use client";
 import type { Page } from "@/types";
-import { useRouter } from "next/navigation";
 import { Button } from "primereact/button";
-import { Checkbox } from "primereact/checkbox";
 import { InputText } from "primereact/inputtext";
-import { Password } from "primereact/password";
-import { useContext, useState } from "react";
+import { Dropdown } from "primereact/dropdown";
+import { useContext } from "react";
 import { LayoutContext } from "../../../../layout/context/layoutcontext";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSchema, TUserSchema } from "@/lib/UserSchema";
-
+import { Calendar } from "primereact/calendar";
 
 const Register: Page = () => {
-    // const [confirmed, setConfirmed] = useState(false);
-    const router = useRouter();
     const { layoutConfig } = useContext(LayoutContext);
     const dark = layoutConfig.colorScheme !== "light";
+    const genders = [
+        { label: "Male", value: "male", },
+        { label: "Female", value: "female", },
+        { label: "Transgender", value: "transgender", },
+    ];
+    const caste = [
+        { label: "general", value: "general", },
+        { label: "obc", value: "obc", },
+        { label: "pvtg", value: "pvtg", },
+        { label: "sc", value: "sc", },
+        { label: "st", value: "st", },
+    ];
+    const maritalStatus = [
+        { label: "married", value: "married", },
+        { label: "never married", value: "never married", },
+        { label: "divorced", value: "divorced", },
+        { label: "widowed", value: "widowed", },
+    ];
+    const educationalQualification = [
+        { label: "8th pass", value: "8th pass", },
+        { label: "10th pass", value: "10th pass", },
+        { label: "12th pass", value: "12th pass", },
+        { label: "Graduate", value: "Graduate", },
+        { label: "Diploma", value: "Diploma", },
+        { label: "Post Graduate", value: "Post Graduate", },
+    ];
     const {
+        control,
         register,
         handleSubmit,
         formState: { errors, isSubmitting }
     } = useForm<TUserSchema>({
-        resolver: zodResolver(UserSchema)
+        resolver: zodResolver(UserSchema),
+        defaultValues: {
+            gender: "male",
+            caste: "general",
+            maritalStatus: "married",
+            educationalQualification: "8th pass"
+        }
     });
     const onSubmit = (data: TUserSchema) => {
         console.log(data);
@@ -75,18 +104,18 @@ const Register: Page = () => {
                         <span className="p-input-icon-left w-full mb-4">
                             <i className="pi pi-user"></i>
                             <InputText
-                                {...register("username")}
-                                id="username"
+                                {...register("name")}
+                                id="name"
                                 type="text"
                                 className="w-full md:w-25rem"
-                                placeholder="Username"
+                                placeholder="Name"
                             />
-                            {errors.username && (
-                                <div className="text-red-600">{errors.username.message}</div>
+                            {errors.name && (
+                                <div className="text-red-600">{errors.name.message}</div>
                             )}
                         </span>
                         <span className="p-input-icon-left w-full mb-4">
-                            <i className="pi pi-envelope"></i>
+                            <i className="pi pi-user"></i>
                             <InputText
                                 {...register("email")}
                                 id="email"
@@ -99,57 +128,88 @@ const Register: Page = () => {
                             )}
                         </span>
                         <span className="p-input-icon-left w-full mb-4">
-                            <i className="pi pi-lock z-2"></i>
+                            <i className="pi pi-user"></i>
                             <InputText
-                                {...register("password")}
-                                id="password"
-                                type="password"
-                                className="w-full"
-                                placeholder="Password"
+                                {...register("mobile")}
+                                id="mobile"
+                                type="text"
+                                className="w-full md:w-25rem"
+                                placeholder="Mobile"
                             />
-                            {errors.password && (
-                                <div className="text-red-600">{errors.password.message}</div>
+                            {errors.mobile && (
+                                <div className="text-red-600">{errors.mobile.message}</div>
                             )}
                         </span>
                         <span className="p-input-icon-left w-full mb-4">
-                            <i className="pi pi-lock z-2"></i>
+                            <i className="pi pi-user"></i>
                             <InputText
-                                {...register("confirmPassword")}
-                                id="confirm-password"
-                                type="password"
-                                className="w-full"
-                                placeholder="Confirm Password"
+                                {...register("pan")}
+                                id="pan"
+                                type="text"
+                                className="w-full md:w-25rem"
+                                placeholder="PAN"
                             />
-                            {errors.confirmPassword && (
-                                <div className="text-red-600">{errors.confirmPassword.message}</div>
+                            {errors.pan && (
+                                <div className="text-red-600">{errors.pan.message}</div>
                             )}
                         </span>
-                        <div className="mb-2 flex flex-wrap">
-                            <input
-                                type="checkbox"
-                                {...register("agreedToTNC")}
-                                id="checkbox"
-                                className="mr-2"
-                            ></input>
-                            <label
-                                htmlFor="checkbox"
-                                className="text-900 font-medium mr-2"
-                            >
-                                I have read the
-                            </label>
-                            <a className="text-600 cursor-pointer hover:text-primary cursor-pointer">
-                                Terms and Conditions
-                            </a>
-                        </div>
-                        {errors.agreedToTNC && (
-                            <div className="mb-2 text-red-600">{errors.agreedToTNC.message}</div>
-                        )}
+                        <span className="flex flex-column mb-4">
+                            <span>Date of birth</span>
+                            <Calendar
+                                showIcon
+                                showButtonBar
+                                {...register("dob")}
+                            />
+                        </span>
+                        <span className="flex justify-content-between align-items-center w-full mb-4">
+                            <span>Gender</span>
+                            <select {...register("gender")}>
+                                {genders.map(gender => (
+                                    <option key={gender.value} value={gender.value}>{gender.label}</option>
+                                ))}
+                            </select>
+                            {errors.gender && (
+                                <div className="text-red-600">{errors.gender.message}</div>
+                            )}
+                        </span>
+                        <span className="flex justify-content-between align-items-center w-full mb-4">
+                            <span>Caste</span>
+                            <select {...register("caste")}>
+                                {caste.map(c => (
+                                    <option key={c.value} value={c.value}>{c.label}</option>
+                                ))}
+                            </select>
+                            {errors.caste && (
+                                <div className="text-red-600">{errors.caste.message}</div>
+                            )}
+                        </span>
+                        <span className="flex justify-content-between align-items-center w-full mb-4">
+                            <span>Marital Status</span>
+                            <select {...register("maritalStatus")}>
+                                {maritalStatus.map(ms => (
+                                    <option key={ms.value} value={ms.value}>{ms.label}</option>
+                                ))}
+                            </select>
+                            {errors.maritalStatus && (
+                                <div className="text-red-600">{errors.maritalStatus.message}</div>
+                            )}
+                        </span>
+                        <span className="flex justify-content-between align-items-center w-full mb-4">
+                            <span>Educational Qualification</span>
+                            <select {...register("educationalQualification")}>
+                                {educationalQualification.map(eq => (
+                                    <option key={eq.value} value={eq.value}>{eq.label}</option>
+                                ))}
+                            </select>
+                            {errors.educationalQualification && (
+                                <div className="text-red-600">{errors.educationalQualification.message}</div>
+                            )}
+                        </span>
                         <Button
                             type="submit"
                             label="Sign Up"
                             className="w-full mb-4"
                             disabled={isSubmitting}
-                            // onClick={() => router.push("/")}
                         ></Button>
                         <span className="font-medium text-600">
                             Already have an account?{" "}
