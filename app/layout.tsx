@@ -7,6 +7,7 @@ import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/primereact.css";
 import "../styles/demo/Demos.scss";
 import "../styles/layout/layout.scss";
+import { StoreProvider } from "@/redux/storeProvider";
 
 interface RootLayoutProps {
     children: React.ReactNode;
@@ -23,9 +24,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 ></link>
             </head>
             <body>
-                <PrimeReactProvider>
-                    <LayoutProvider>{children}</LayoutProvider>
-                </PrimeReactProvider>
+                <StoreProvider>
+                    <PrimeReactProvider>
+                        <LayoutProvider>{children}</LayoutProvider>
+                    </PrimeReactProvider>
+                </StoreProvider>
+                
             </body>
         </html>
     );

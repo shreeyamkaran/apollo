@@ -8,8 +8,13 @@ import { Sidebar } from "primereact/sidebar";
 import { classNames } from "primereact/utils";
 import { useContext, useEffect } from "react";
 import { LayoutContext } from "./context/layoutcontext";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import { changeLanguage } from "@/redux/slices/languageSlice";
 
 const AppConfig = (props: AppConfigProps) => {
+    const language = useSelector((state: RootState) => state.language.value);
+    const dispatch: AppDispatch = useDispatch();
     const {
         layoutConfig,
         setLayoutConfig,
@@ -128,6 +133,29 @@ const AppConfig = (props: AppConfigProps) => {
                 position="right"
                 className="layout-config-sidebar w-18rem"
             >
+                <h5>Language</h5>
+                <div className="flex flex-wrap row-gap-3">
+                    <div className="flex align-items-center gap-2 w-6">
+                        <RadioButton
+                            name="languageMode"
+                            value={"en-US"}
+                            checked={language == "en-US"}
+                            onChange={(e) => dispatch(changeLanguage(e.target.value))}
+                            inputId="mode1"
+                        ></RadioButton>
+                        <label htmlFor="mode1">English</label>
+                    </div>
+                    <div className="flex align-items-center gap-2 w-6">
+                        <RadioButton
+                            name="languageMode"
+                            value={"te-IN"}
+                            checked={language == "te-IN"}
+                            onChange={(e) => dispatch(changeLanguage(e.target.value))}
+                            inputId="mode2"
+                        ></RadioButton>
+                        <label htmlFor="mode2">Telugu</label>
+                    </div>
+                </div>
                 <h5>Themes</h5>
                 <div className="flex flex-wrap row-gap-3">
                     {componentThemes.map((theme, i) => {
@@ -206,9 +234,7 @@ const AppConfig = (props: AppConfigProps) => {
                                 <RadioButton
                                     name="menuMode"
                                     value={"overlay"}
-                                    checked={
-                                        layoutConfig.menuMode === "overlay"
-                                    }
+                                    checked={layoutConfig.menuMode === "overlay"}
                                     onChange={(e) => changeMenuMode(e)}
                                     inputId="mode2"
                                 ></RadioButton>
